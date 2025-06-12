@@ -1,0 +1,27 @@
+name: 'Setup Moxie tool'
+description: 'Download and unpack Moxie to use in a workflow.'
+inputs:
+  version:
+    description: 'Version of Moxie to use. (Default 0.10.0)'
+    required: false
+    default: '0.10.0'
+runs:
+  using: "composite"
+  steps:
+    - id: download
+      shell: bash
+      run: |
+        wget http://gitblit-org.github.io/moxie/maven/com/gitblit/moxie/moxie+ant/${{ inputs.version }}/moxie+ant-${{ inputs.version }}.tar.gz
+
+    - id: unpack
+      shell: bash
+      run: |
+        tar -xzf moxie+ant-${{ inputs.version }}.tar.gz
+        rm moxie+ant-${{ inputs.version }}.tar.gz
+
+    - id: add
+      shell: bash
+      run: |
+        moxie-${{ inputs.version }}/bin/moxie -version
+        echo "moxie=moxie-${{ inputs.version }}/bin/moxie" >> $GITHUB_OUTPUT
+        echo "${PWD}/moxie-${{ inputs.version }}/bin" >> $GITHUB_PATH
